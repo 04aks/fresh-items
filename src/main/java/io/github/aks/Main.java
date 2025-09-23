@@ -1,11 +1,18 @@
 package io.github.aks;
 
-import io.github.aks.transport.HttpTransport;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import io.github.aks.facade.FreshItems;
+import io.github.aks.model.Player;
+import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
-        HttpTransport transport = new HttpTransport("https://pitpanda.rocks/api/players");
-        String response = transport.get("/DanTDM", null);
-        System.out.println(response);
+        FreshItems freshItems = new FreshItems();
+        try {
+            List<Player> ps = freshItems.items(new String[]{"sbah", "ducttapedigger"}).findPlayersWithItems();
+            System.out.println(ps.size());
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
