@@ -1,4 +1,4 @@
-package io.github.aks.model;
+package io.github.aks.model.item;
 
 
 public abstract class Item{

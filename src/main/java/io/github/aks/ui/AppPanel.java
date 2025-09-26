@@ -1,5 +1,7 @@
 package io.github.aks.ui;
 
+import io.github.aks.utils.ImageFetcher;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;

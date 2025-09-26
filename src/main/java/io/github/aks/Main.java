@@ -9,14 +9,13 @@ import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
-//        FreshItems freshItems = new FreshItems();
-//        try {
-//            List<Player> ps = freshItems.items(new String[]{"sbah", "ducttapedigger"}).findPlayersWithItems();
-//            System.out.println(ps.size());
-//        } catch (JsonProcessingException e) {
-//            throw new RuntimeException(e);
-//        }
+
         Window window = new Window();
+        FreshItems freshItems = new FreshItems();
+        List<Player> ps = freshItems.playerService().findPlayers(new String[]{"sbah", "kosher", "SupremeSteam"});
+        ps.forEach(p -> {
+            System.out.println(p.getIgn() + " -> avatar: " + (p.getAvatar() != null) + " -> pants: " + p.getPants().getItems());
+        });
 
     }
 }

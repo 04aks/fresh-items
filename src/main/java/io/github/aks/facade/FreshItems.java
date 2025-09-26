@@ -1,21 +1,24 @@
 package io.github.aks.facade;
 
-import io.github.aks.service.ItemsService;
+import io.github.aks.service.AvatarService;
+import io.github.aks.service.InventoryService;
+import io.github.aks.service.PlayerService;
 import io.github.aks.transport.HttpTransport;
 import io.github.aks.utils.JsonSerializer;
 
 public class FreshItems {
-    private final String baseUrl;
-    private final HttpTransport transport;
-    private final JsonSerializer json;
+    private final AvatarService avatarService;
+    private final InventoryService inventoryService;
     public FreshItems(){
-        baseUrl = "https://pitpanda.rocks/api/players";
-        transport = new HttpTransport(baseUrl);
-        json = new JsonSerializer();
+        String baseUrl = "https://pitpanda.rocks/api/players";
+        HttpTransport transport = new HttpTransport(baseUrl);
+        JsonSerializer json = new JsonSerializer();
+        avatarService = new AvatarService();
+        inventoryService = new InventoryService(transport, json);
     }
 
-    public ItemsService items(String[] players){
-        return new ItemsService(players, transport, json);
+    public PlayerService playerService(){
+        return new PlayerService(avatarService, inventoryService);
     }
 
 

@@ -1,7 +1,13 @@
 package io.github.aks.model;
 
+import io.github.aks.model.item.ItemBow;
+import io.github.aks.model.item.ItemPants;
+import io.github.aks.model.item.ItemSword;
+import java.awt.image.BufferedImage;
+
 public class Player {
     private final String ign;
+    private BufferedImage avatar;
     private final ItemBow bow;
     private final ItemPants pants;
     private final ItemSword sword;
@@ -11,6 +17,7 @@ public class Player {
         bow = new ItemBow();
         pants = new ItemPants();
         sword = new ItemSword();
+        avatar = null;
     }
 
     public ItemBow getBow() {
@@ -27,5 +34,13 @@ public class Player {
 
     public String getIgn() {
         return ign;
+    }
+
+    public BufferedImage getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(BufferedImage avatar) {
+        this.avatar = avatar;
     }
 }
