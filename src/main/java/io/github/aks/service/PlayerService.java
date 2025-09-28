@@ -1,16 +1,8 @@
 package io.github.aks.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import io.github.aks.model.Player;
-import io.github.aks.transport.HttpTransport;
-import io.github.aks.utils.ImageFetcher;
-import io.github.aks.utils.JsonSerializer;
-
-import java.awt.image.BufferedImage;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.Future;
 
 public class PlayerService {
     private final AvatarService avatarService;
@@ -24,12 +16,9 @@ public class PlayerService {
         return Arrays.stream(playerNames)
                 .map(Player::new)
                 .map(player -> {
+                    // avatar
                     player.setAvatar(avatarService.fetchAvatar(player.getIgn()));
-
-                    /*
-                    try catch block because an exception was thrown before
-                    lost the logs, donnu what it was exactly
-                     */
+                    // inventory
                     try{
                         inventoryService.enrichInventory(player);
                     }catch(Exception e){

@@ -1,7 +1,6 @@
 package io.github.aks.ui;
 
-import io.github.aks.utils.ImageFetcher;
-
+import io.github.aks.facade.FreshItems;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
@@ -9,6 +8,7 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 
 public class AppPanel extends JPanel implements MouseListener, MouseMotionListener {
+    private final FreshItems freshItems;
     static final int WIDTH = 500;
     static final int HEIGHT = 300;
     int state = 0;
@@ -16,12 +16,17 @@ public class AppPanel extends JPanel implements MouseListener, MouseMotionListen
     Ui ui;
     HomeState homePanel;
 
-    public AppPanel() {
+    public AppPanel(FreshItems freshItems) {
+        this.freshItems = freshItems;
         setPreferredSize(new Dimension(WIDTH, HEIGHT));
         addMouseListener(this);
         addMouseMotionListener(this);
         ui = new Ui(this);
         homePanel = new HomeState(this);
+    }
+
+    public FreshItems getFreshItems() {
+        return freshItems;
     }
 
     @Override

@@ -1,7 +1,10 @@
 package io.github.aks.ui;
 
 import io.github.aks.utils.ResourceLoader;
+import io.github.aks.utils.StringUtils;
+
 import java.awt.*;
+import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -97,7 +100,13 @@ public class HomeState {
                 System.out.println("pants");
             }
             if(ap.homePanel.instructionButton.getRectangle().contains(e.getX(), e.getY())){
-                System.out.println("load players");
+                try {
+                    ap.getFreshItems().playerManager().loadPlayers(StringUtils.getClipboard());
+                } catch (IOException ex) {
+                    throw new RuntimeException("Failed to access clipboard", ex);
+                } catch (UnsupportedFlavorException ex) {
+                    throw new RuntimeException("Clipboard does not contain plain text (expected comma-separated IGNs)", ex);
+                }
             }
         }
 

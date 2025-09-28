@@ -1,7 +1,6 @@
 package io.github.aks.service;
 
 import io.github.aks.utils.ImageFetcher;
-
 import java.awt.image.BufferedImage;
 
 public class AvatarService {
