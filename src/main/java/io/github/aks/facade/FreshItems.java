@@ -1,21 +1,25 @@
 package io.github.aks.facade;
 
+import io.github.aks.api.AuthProvider;
 import io.github.aks.manager.PlayerManager;
 import io.github.aks.service.AvatarService;
 import io.github.aks.service.InventoryService;
 import io.github.aks.service.PlayerService;
 import io.github.aks.transport.HttpTransport;
 import io.github.aks.utils.JsonSerializer;
+import io.github.cdimascio.dotenv.Dotenv;
 
 public class FreshItems {
     private final PlayerManager playerManager;
 
     public FreshItems(){
-        String baseUrl = "https://pitpanda.rocks/api/players";
+        String baseUrl = "https://api.hypixel.net/v2/player";
+        Dotenv dotenv = Dotenv.load();
         HttpTransport transport = new HttpTransport(baseUrl);
         JsonSerializer json = new JsonSerializer();
+        AuthProvider hypixelAuth = new AuthProvider(dotenv.get("API_KEY"));
         AvatarService avatarService = new AvatarService();
-        InventoryService inventoryService = new InventoryService(transport, json);
+        InventoryService inventoryService = new InventoryService(transport, json, hypixelAuth);
         PlayerService playerService = new PlayerService(avatarService, inventoryService);
         playerManager = new PlayerManager(playerService);
     }

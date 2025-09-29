@@ -14,9 +14,8 @@ import java.util.concurrent.Future;
 public class ImageFetcher {
     private static final ExecutorService executor = Executors.newFixedThreadPool(10);
 
-    public static Future<BufferedImage> getImageFromURL(String playerName){
+    public static Future<BufferedImage> getImageFromURL(String link){
         return executor.submit(() -> {
-            String link = "https://mc-heads.net/avatar/" + playerName + "/80";
             BufferedImage image = null;
             try{
                 URL url = new URL(link);

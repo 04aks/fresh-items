@@ -12,9 +12,9 @@ public class HttpTransport {
     public HttpTransport(String baseUrl){
         this.baseUrl = baseUrl;
     }
-    public String get(String path, Map<String, String> headers){
+    public String get(String name, Map<String, String> headers){
 
-        String url = baseUrl + path;
+        String url = baseUrl + "?name=" + name;
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest.Builder requestBuilder = HttpRequest.newBuilder()
                 .uri(URI.create(url));
