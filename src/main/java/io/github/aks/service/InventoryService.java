@@ -5,7 +5,9 @@ import com.fasterxml.jackson.databind.JsonNode;
 import io.github.aks.api.AuthProvider;
 import io.github.aks.model.Player;
 import io.github.aks.transport.HttpTransport;
+import io.github.aks.utils.Decoder;
 import io.github.aks.utils.JsonSerializer;
+import net.querz.nbt.tag.CompoundTag;
 
 public class InventoryService {
     private final HttpTransport transport;
@@ -36,9 +38,16 @@ public class InventoryService {
         JsonNode pitNode = null;
         if(statsNode.has("Pit")){
             pitNode = statsNode.get("Pit");
+        }else{
+            return;
         }
-        System.out.println(pitNode != null ? pitNode.toString() : "null object");
-//        System.out.println(statsNode.has("pit") ? statsNode.get("pit").asText() : "bruv");
+        JsonNode enderChestDataNode = pitNode.get("profile").get("inv_enderchest").get("data");
+        int[] enderChestData = json.nodeToArray(enderChestDataNode, int[].class);
+        byte[] compressed = Decoder.intArrayToBytes(enderChestData);
+        // named binary tag
+        CompoundTag tag = Decoder.parsedNBT(Decoder.decodeToNBT(compressed));
+
+
 //        // main inventory
 //        filterItems(inventoriesNode, "main", player);
 //        // ender chest

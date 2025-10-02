@@ -20,4 +20,7 @@ public class JsonSerializer {
             throw new RuntimeException("Failed to deserialize json to object " + e);
         }
     }
+    public <T> T nodeToArray(JsonNode node, Class<T> clazz){
+        return objectMapper.convertValue(node, clazz);
+    }
 }
