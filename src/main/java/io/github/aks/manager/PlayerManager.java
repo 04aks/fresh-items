@@ -2,8 +2,6 @@ package io.github.aks.manager;
 
 import io.github.aks.model.Player;
 import io.github.aks.service.PlayerService;
-
-import java.sql.SQLOutput;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;

@@ -1,7 +1,5 @@
 package io.github.aks.utils;
 
-import io.github.aks.ui.AppPanel;
-
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.IOException;

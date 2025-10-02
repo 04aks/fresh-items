@@ -2,7 +2,6 @@ package io.github.aks.ui;
 
 import io.github.aks.utils.ResourceLoader;
 import io.github.aks.utils.StringUtils;
-
 import java.awt.*;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.event.MouseEvent;
