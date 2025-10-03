@@ -3,20 +3,27 @@ package io.github.aks.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import io.github.aks.api.AuthProvider;
+import io.github.aks.domain.rules.ItemCheckRegistry;
 import io.github.aks.model.Player;
 import io.github.aks.transport.HttpTransport;
 import io.github.aks.utils.Decoder;
 import io.github.aks.utils.JsonSerializer;
 import net.querz.nbt.tag.CompoundTag;
+import net.querz.nbt.tag.ListTag;
+
+import java.util.List;
 
 public class InventoryService {
     private final HttpTransport transport;
     private final JsonSerializer json;
     private final AuthProvider auth;
+
+    private final ItemCheckRegistry itemCheckRegistry;
     public InventoryService(HttpTransport transport, JsonSerializer json, AuthProvider auth){
         this.transport = transport;
         this.json = json;
         this.auth = auth;
+        this.itemCheckRegistry = new ItemCheckRegistry();
     }
 
     public void enrichInventory(Player player){
@@ -33,47 +40,51 @@ public class InventoryService {
         }
 
         if(! success) return;
-
         JsonNode statsNode = responseNode.get("player").get("stats");
-        JsonNode pitNode = null;
-        if(statsNode.has("Pit")){
-            pitNode = statsNode.get("Pit");
-        }else{
-            return;
-        }
+
+        if(! statsNode.has("Pit")) return;
+        JsonNode pitNode = statsNode.get("Pit");
+
+        // ender chest
         JsonNode enderChestDataNode = pitNode.get("profile").get("inv_enderchest").get("data");
-        int[] enderChestData = json.nodeToArray(enderChestDataNode, int[].class);
-        byte[] compressed = Decoder.intArrayToBytes(enderChestData);
-        // named binary tag
-        CompoundTag tag = Decoder.parsedNBT(Decoder.decodeToNBT(compressed));
+        // inventory
+        JsonNode inventoryDataNode = pitNode.get("profile").get("inv_contents").get("data");
+        // armor slots
+        /*
+            SOON COME
+         */
+        List<ListTag<CompoundTag>> allItemLists = List.of(
+                getItemsListTag(enderChestDataNode),
+                getItemsListTag(inventoryDataNode)
+        );
 
+        for(ListTag<CompoundTag> itemList : allItemLists){
+            filterItems(itemList, player);
+        }
 
-//        // main inventory
-//        filterItems(inventoriesNode, "main", player);
-//        // ender chest
-//        filterItems(inventoriesNode, "enderchest", player);
-//        // armor
-//        filterItems(inventoriesNode, "armor", player);
     }
 
-    public void filterItems(JsonNode inventoriesNode, String inventory, Player player){
-        for(JsonNode slot : inventoriesNode.get(inventory)){
-            int itemID;
-            try{
-                itemID = slot.get("id").asInt();
-            }catch (NullPointerException e){
-                continue;
-            }
+    public void filterItems(ListTag<CompoundTag> items, Player player){
+        for(CompoundTag item : items){
+            if(! item.containsKey("tag")) continue;
+            CompoundTag tag = item.getCompoundTag("tag");
 
+            if(! tag.containsKey("display")) continue;
+            CompoundTag displayTag = tag.getCompoundTag("display");
 
-            switch(itemID){
-                // sword
-                case 283 -> player.getSword().addItem();
-                // bow
-                case 261 -> player.getBow().addItem();
-                // pants
-                case 300 -> player.getPants().addItem();
-            }
+            if(! displayTag.containsKey("Name")) continue;
+            String itemName = displayTag.getString("Name")
+                    .replaceAll("§.", "")
+                            .toLowerCase();
+
+            itemCheckRegistry.applyChecks(player, itemName);
         }
+
+    }
+    public ListTag<CompoundTag> getItemsListTag(JsonNode node){
+        int[] invData = json.nodeToArray(node, int[].class);
+        byte[] compressed = Decoder.intArrayToBytes(invData);
+        CompoundTag root = Decoder.parsedNBT(Decoder.decodeToNBT(compressed));
+        return root.getListTag("i").asCompoundTagList();
     }
 }
