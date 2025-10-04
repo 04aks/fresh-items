@@ -1,41 +1,32 @@
-package io.github.aks.ui;
+package io.github.aks.ui.states;
 
-import io.github.aks.utils.ResourceLoader;
+import io.github.aks.ui.AppPanel;
+import io.github.aks.ui.util.Button;
 import io.github.aks.utils.StringUtils;
 import java.awt.*;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.event.MouseEvent;
-import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.List;
 
-public class HomeState {
+public class HomeState extends State{
 
-    private BufferedImage pitImage, swordImage, bowImage, pantsImage;
     private final Button swordButton, bowButton, pantsButton, instructionButton;
     private final List<Button> buttons;
-    private final AppPanel ap;
     public HomeState(AppPanel ap){
-        this.ap = ap;
+        super(ap);
         swordButton = new Button();
         bowButton = new Button();
         pantsButton = new Button();
         instructionButton = new Button();
         buttons = List.of(swordButton, bowButton, pantsButton, instructionButton);
-        try{
-            swordImage = ResourceLoader.getImage("/icons/sword.png");
-            bowImage = ResourceLoader.getImage("/icons/bow.png");
-            pantsImage = ResourceLoader.getImage("/icons/pants.png");
-            pitImage = ResourceLoader.getImage("/pit.png");
-        }catch(IOException e){
-            System.err.println("Error while loading resources " + e);
-        }
     }
 
+    @Override
     public void draw(Graphics2D g2){
-        g2.drawImage(pitImage, -300, -100, null);
+        g2.drawImage(ap.ui.pitImage, -300, -100, null);
         g2.setColor(new Color(0,0,0,130));
-        g2.fillRect(0, 0, AppPanel.WIDTH, AppPanel.HEIGHT);
+        g2.fillRect(0, 0, ap.getWIDTH(), ap.getHEIGHT());
 
 
         int buttonSize = 100;
@@ -43,8 +34,8 @@ public class HomeState {
         int containerWidth = buttonSize * 3 + gap * 2;
         int containerHeight = 100;
 
-        int startX = (AppPanel.WIDTH - containerWidth) / 2;
-        int startY = (AppPanel.HEIGHT - containerHeight) / 2;
+        int startX = (ap.getWIDTH() - containerWidth) / 2;
+        int startY = (ap.getHEIGHT() - containerHeight) / 2;
 
 
         int x = startX;
@@ -56,7 +47,7 @@ public class HomeState {
 
         String instruction = "Click here to paste a list of IGNs separated by a comma";
         g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 12));
-        int instructionX = ap.ui.getXForCenteredText(g2, instruction, AppPanel.WIDTH);
+        int instructionX = ap.ui.getXForCenteredText(g2, instruction, ap.getWIDTH());
         int instructionY = startY + buttonSize + 25;
         int instructionWidth = ap.ui.getTextWidth(g2, instruction);
         instructionButton.setRectangle(new Rectangle(instructionX - 5, instructionY - 20, instructionWidth + 10, 30));
@@ -73,11 +64,11 @@ public class HomeState {
         }
 
         //sword
-        g2.drawImage(swordImage, swordButton.getRectangle().x + 10, startY + 10, 80, 80, null);
+        g2.drawImage(ap.ui.swordImage, swordButton.getRectangle().x + 10, startY + 10, 80, 80, null);
         //bow
-        g2.drawImage(bowImage, bowButton.getRectangle().x + 10, startY + 10, 80, 80, null);
+        g2.drawImage(ap.ui.bowImage, bowButton.getRectangle().x + 10, startY + 10, 80, 80, null);
         //pants
-        g2.drawImage(pantsImage, pantsButton.getRectangle().x, startY, 100, 100, null);
+        g2.drawImage(ap.ui.pantsImage, pantsButton.getRectangle().x, startY, 100, 100, null);
 
 
         g2.setColor(Color.LIGHT_GRAY);
@@ -91,12 +82,19 @@ public class HomeState {
         if(ap.state == ap.home_state){
             if(ap.homePanel.swordButton.getRectangle().contains(e.getX(), e.getY())){
                 System.out.println("sword");
+                ap.state = ap.sword_state;
+                ap.setCurrentState(ap.getCategoryStates().get(CategoryType.SWORDS));
+                ap.expandToCategoryView();
             }
             if(ap.homePanel.bowButton.getRectangle().contains(e.getX(), e.getY())){
                 System.out.println("bow");
+                ap.state = ap.bow_state;
+                ap.expandToCategoryView();
             }
             if(ap.homePanel.pantsButton.getRectangle().contains(e.getX(), e.getY())){
                 System.out.println("pants");
+                ap.state = ap.pants_state;
+                ap.expandToCategoryView();
             }
             if(ap.homePanel.instructionButton.getRectangle().contains(e.getX(), e.getY())){
                 try {

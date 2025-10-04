@@ -1,4 +1,4 @@
-package io.github.aks.ui;
+package io.github.aks.ui.util;
 
 import java.awt.*;
 
